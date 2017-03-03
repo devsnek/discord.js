@@ -181,7 +181,7 @@ class WebSocketManager extends EventEmitter {
     const d = {
       afk: false,
       since: 0,
-      status: data.status,
+      status: data.status  || this.client.user.localPresence.status || this.client.user.presence.status,
       game,
     };
 
