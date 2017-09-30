@@ -3,23 +3,35 @@
  * @extends Error
  */
 class DiscordAPIError extends Error {
-  constructor(path, error) {
+  constructor(res) {
     super();
-    const flattened = this.constructor.flattenErrors(error.errors || error).join('\n');
     this.name = 'DiscordAPIError';
-    this.message = error.message && flattened ? `${error.message}\n${flattened}` : error.message || flattened;
+
+    if (res.body && typeof res.body === 'object') {
+      const error = res.body;
+      const flattened = this.constructor.flattenErrors(error.errors || error).join('\n');
+      this.message = error.message && flattened ? `${error.message}\n${flattened}` : error.message || flattened;
+    } else {
+      this.message = res.text;
+    }
 
     /**
      * The path of the request relative to the HTTP endpoint
      * @type {string}
      */
-    this.path = path;
+    this.path = res.request.path;
 
     /**
-     * HTTP error code returned by Discord
-     * @type {number}
+     * HTTP error code returned by Discord or HTTP code
+     * @type {?number}
      */
-    this.code = error.code;
+    this.code = res.body.code || res.status;
+
+    /**
+     * Cloudflare Ray this request was handled by
+     * @type {?string}
+     */
+    this.cfRay = res.headers['cf-ray'] || null;
   }
 
   /**
