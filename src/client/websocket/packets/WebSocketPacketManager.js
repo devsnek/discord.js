@@ -36,6 +36,7 @@ class WebSocketPacketManager {
     this.register(WSEvents.CHANNEL_UPDATE, require('./handlers/ChannelUpdate'));
     this.register(WSEvents.CHANNEL_PINS_UPDATE, require('./handlers/ChannelPinsUpdate'));
     this.register(WSEvents.PRESENCE_UPDATE, require('./handlers/PresenceUpdate'));
+    this.register(WSEvents.PRESENCES_REPLACE, require('./handlers/PresencesReplace'));
     this.register(WSEvents.USER_UPDATE, require('./handlers/UserUpdate'));
     this.register(WSEvents.USER_NOTE_UPDATE, require('./handlers/UserNoteUpdate'));
     this.register(WSEvents.USER_SETTINGS_UPDATE, require('./handlers/UserSettingsUpdate'));
