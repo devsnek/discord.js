@@ -8,7 +8,8 @@
     "node": true
   },
   "overrides": [
-    { "files": ["*.browser.js"], "env": { "browser": true } }
+    { "files": ["*.browser.js"], "env": { "browser": true } },
+    { "files": "*.mjs", "parserOptions": { "sourceType": "module" } }
   ],
   "rules": {
     "no-await-in-loop": "warn",
