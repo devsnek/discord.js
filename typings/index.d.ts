@@ -339,9 +339,6 @@ declare module 'discord.js' {
     public commandID: Snowflake;
     public commandName: string;
     public options?: object;
-
-    public acknowledge(options?: InteractionMessageOptions): void;
-    public reply(content?: StringResolvable | APIMessage, options?: InteractionMessageOptions | MessageAdditions): void;
   }
 
   export const Constants: {
@@ -975,6 +972,9 @@ declare module 'discord.js' {
     public member?: GuildMember;
     public syncHandle: object;
     public type: keyof typeof InteractionType;
+
+    public acknowledge(options?: InteractionMessageOptions): void;
+    public reply(content?: StringResolvable | APIMessage, options?: InteractionMessageOptions | MessageAdditions): void;
   }
 
   export class InteractionClient extends BaseClient {

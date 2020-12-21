@@ -32,45 +32,6 @@ class CommandInteraction extends Interaction {
      */
     this.options = data.data.options;
   }
-
-  /**
-   * Acknowledge this interaction without content.
-   * @param {InteractionMessageOptions} [options] Options
-   */
-  async acknowledge(options = {}) {
-    await this.syncHandle.acknowledge(options);
-  }
-
-  /**
-   * Reply to this interaction.
-   * @param {(StringResolvable | APIMessage)?} content The content for the message.
-   * @param {(InteractionMessageOptions | MessageAdditions)?} options The options to provide.
-   */
-  async reply(content, options) {
-    let apiMessage;
-
-    if (content instanceof APIMessage) {
-      apiMessage = content.resolveData();
-    } else {
-      apiMessage = APIMessage.create(this, content, options).resolveData();
-      if (Array.isArray(apiMessage.data.content)) {
-        throw new Error('Message is too long');
-      }
-    }
-
-    const resolved = await apiMessage.resolveFiles();
-
-    if (!this.syncHandle.reply(resolved)) {
-      const clientID =
-        this.client.interactionClient.clientID || (await this.client.api.oauth2.applications('@me').get()).id;
-
-      await this.client.api.webhooks(clientID, this.token).post({
-        auth: false,
-        data: resolved.data,
-        files: resolved.files,
-      });
-    }
-  }
 }
 
 module.exports = CommandInteraction;
