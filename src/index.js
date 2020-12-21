@@ -6,7 +6,6 @@ module.exports = {
   // "Root" classes (starting points)
   BaseClient: require('./client/BaseClient'),
   Client: require('./client/Client'),
-  CommandInteraction: require('./structures/CommandInteraction'),
   InteractionClient: require('./client/InteractionClient'),
   Shard: require('./sharding/Shard'),
   ShardClientUtil: require('./sharding/ShardClientUtil'),
@@ -73,6 +72,7 @@ module.exports = {
     return require('./structures/ClientUser');
   },
   Collector: require('./structures/interfaces/Collector'),
+  CommandInteraction: require('./structures/CommandInteraction'),
   DMChannel: require('./structures/DMChannel'),
   Emoji: require('./structures/Emoji'),
   Guild: require('./structures/Guild'),
