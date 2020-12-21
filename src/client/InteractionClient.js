@@ -117,7 +117,9 @@ class InteractionClient extends BaseClient {
           this.client.setTimeout(() => {
             timedOut = true;
             r({
-              type: InteractionResponseType.ACKNOWLEDGE_WITH_SOURCE,
+              type: this.client.options.hideSource
+                ? InteractionResponseType.ACKNOWLEDGE
+                : InteractionResponseType.ACKNOWLEDGE_WITH_SOURCE,
             });
           }, 250);
         });
@@ -126,9 +128,10 @@ class InteractionClient extends BaseClient {
           acknowledge({ hideSource }) {
             if (!timedOut) {
               resolve({
-                type: hideSource
-                  ? InteractionResponseType.ACKNOWLEDGE
-                  : InteractionResponseType.ACKNOWLEDGE_WITH_SOURCE,
+                type:
+                  hideSource ?? this.client.options.hideSource
+                    ? InteractionResponseType.ACKNOWLEDGE
+                    : InteractionResponseType.ACKNOWLEDGE_WITH_SOURCE,
               });
             }
           },

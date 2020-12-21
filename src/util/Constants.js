@@ -23,6 +23,7 @@ const { Error, RangeError } = require('../errors');
  * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
  * upon joining a guild (should be avoided whenever possible)
  * @property {MessageMentionOptions} [allowedMentions] Default value for {@link MessageOptions#allowedMentions}
+ * @property {boolean} [hideSource=false] Default value for {@link InteractionMessageOptions#hideSource}
  * @property {PartialType[]} [partials] Structures allowed to be partial. This means events can be emitted even when
  * they're missing all the data for a particular structure. See the "Partials" topic listed in the sidebar for some
  * important usage information, as partials require you to put checks in place when handling data.
@@ -45,6 +46,7 @@ exports.DefaultOptions = {
   messageSweepInterval: 0,
   messageEditHistoryMaxSize: -1,
   fetchAllMembers: false,
+  hideSource: false,
   partials: [],
   restWsBridgeTimeout: 5000,
   restRequestTimeout: 15000,

@@ -13,7 +13,7 @@ const Util = require('../util/Util');
 class APIMessage {
   /**
    * @param {MessageTarget} target - The target for this message to be sent to
-   * @param {MessageOptions|WebhookMessageOptions} options - Options passed in from send
+   * @param {InteractionMessageOptions|MessageOptions|WebhookMessageOptions} options - Options passed in from send
    */
   constructor(target, options) {
     /**
@@ -24,7 +24,7 @@ class APIMessage {
 
     /**
      * Options passed in from send
-     * @type {MessageOptions|WebhookMessageOptions}
+     * @type {InteractionMessageOptions|MessageOptions|WebhookMessageOptions}
      */
     this.options = options;
 
@@ -167,7 +167,10 @@ class APIMessage {
       flags = this.options.flags != null ? new MessageFlags(this.options.flags).bitfield : this.target.flags.bitfield;
     } else if (this.isInteraction) {
       flags = this.options.ephemeral ? MessageFlags.FLAGS.EPHEMERAL : undefined;
-      this.hideSource = !!this.options.hideSource;
+      this.hideSource =
+        typeof this.options.hideSource === 'undefined'
+          ? this.target.client.options.hideSource
+          : this.options.hideSource;
     }
 
     let allowedMentions =
@@ -326,10 +329,12 @@ class APIMessage {
    * Transforms the user-level arguments into a final options object. Passing a transformed options object alone into
    * this method will keep it the same, allowing for the reuse of the final options object.
    * @param {StringResolvable} [content] Content to send
-   * @param {MessageOptions|WebhookMessageOptions|MessageAdditions} [options={}] Options to use
-   * @param {MessageOptions|WebhookMessageOptions} [extra={}] Extra options to add onto transformed options
+   * @param {InteractionMessageOptions|MessageOptions|WebhookMessageOptions|MessageAdditions} [options={}]
+   * Options to use
+   * @param {InteractionMessageOptions|MessageOptions|WebhookMessageOptions} [extra={}]
+   * Extra options to add onto transformed options
    * @param {boolean} [isWebhook=false] Whether or not to use WebhookMessageOptions as the result
-   * @returns {MessageOptions|WebhookMessageOptions}
+   * @returns {InteractionMessageOptions|MessageOptions|WebhookMessageOptions}
    */
   static transformOptions(content, options, extra = {}, isWebhook = false) {
     if (!options && typeof content === 'object' && !Array.isArray(content)) {
@@ -362,9 +367,11 @@ class APIMessage {
    * Creates an `APIMessage` from user-level arguments.
    * @param {MessageTarget} target Target to send to
    * @param {StringResolvable} [content] Content to send
-   * @param {MessageOptions|WebhookMessageOptions|MessageAdditions} [options={}] Options to use
-   * @param {MessageOptions|WebhookMessageOptions} [extra={}] - Extra options to add onto transformed options
-   * @returns {MessageOptions|WebhookMessageOptions}
+   * @param {InteractionMessageOptions|MessageOptions|WebhookMessageOptions|MessageAdditions} [options={}]
+   * Options to use
+   * @param {InteractionMessageOptions|MessageOptions|WebhookMessageOptions} [extra={}]
+   * - Extra options to add onto transformed options
+   * @returns {InteractionMessageOptions|MessageOptions|WebhookMessageOptions}
    */
   static create(target, content, options, extra = {}) {
     const Webhook = require('./Webhook');
