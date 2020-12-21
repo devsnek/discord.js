@@ -684,19 +684,28 @@ exports.WebhookTypes = [
   'Channel Follower',
 ];
 
-exports.ApplicationCommandOptionType = {
-  SUB_COMMAND: 1,
-  SUB_COMMAND_GROUP: 2,
-  STRING: 3,
-  INTEGER: 4,
-  BOOLEAN: 5,
-  USER: 6,
-  CHANNEL: 7,
-  ROLE: 8,
-};
-Object.entries(exports.ApplicationCommandOptionType).forEach(([k, v]) => {
-  exports.ApplicationCommandOptionType[v] = k;
-});
+/**
+ * The type of option for an application command:
+ * * SUB_COMMAND
+ * * SUB_COMMAND_GROUP
+ * * STRING
+ * * INTEGER
+ * * BOOLEAN
+ * * USER
+ * * CHANNEL
+ * * ROLE
+ * @typedef {string} ApplicationCommandOptionType
+ */
+exports.ApplicationCommandOptionType = [
+  'SUB_COMMAND',
+  'SUB_COMMAND_GROUP',
+  'STRING',
+  'INTEGER',
+  'BOOLEAN',
+  'USER',
+  'CHANNEL',
+  'ROLE',
+];
 
 exports.InteractionType = {
   PING: 1,
