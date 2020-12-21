@@ -2,7 +2,6 @@
 
 const APIMessage = require('./APIMessage');
 const Interaction = require('./Interaction');
-const Snowflake = require('../util/Snowflake');
 
 /**
  * Represents a command interaction, see {@link InteractionClient}.
@@ -10,25 +9,7 @@ const Snowflake = require('../util/Snowflake');
  */
 class CommandInteraction extends Interaction {
   constructor(client, data, syncHandle) {
-    super(client);
-    this.syncHandle = syncHandle;
-    this._patch(data);
-  }
-
-  _patch(data) {
-    /**
-     * The ID of this interaction.
-     * @type {Snowflake}
-     * @readonly
-     */
-    this.id = data.id;
-
-    /**
-     * The token of this interaction.
-     * @type {string}
-     * @readonly
-     */
-    this.token = data.token;
+    super(client, data, syncHandle);
 
     /**
      * The ID of the invoked command.
@@ -46,49 +27,10 @@ class CommandInteraction extends Interaction {
 
     /**
      * The options passed to the command.
-     * @type {Object}
+     * @type {?Object}
      * @readonly
      */
     this.options = data.data.options;
-
-    /**
-     * The channel this interaction was sent in.
-     * @type {?Channel}
-     * @readonly
-     */
-    this.channel = this.client.channels?.cache.get(data.channel_id) || null;
-
-    /**
-     * The guild this interaction was sent in, if any.
-     * @type {?Guild}
-     * @readonly
-     */
-    this.guild = this.client.guilds?.cache.get(data.guild_id) ?? null;
-
-    /**
-     * If this interaction was sent in a guild, the member which sent it.
-     * @type {?GuildMember}
-     * @readonly
-     */
-    this.member = this.guild?.members.add(data.member, false) ?? null;
-  }
-
-  /**
-   * The timestamp the interaction was created at.
-   * @type {number}
-   * @readonly
-   */
-  get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).timestamp;
-  }
-
-  /**
-   * The time the interaction was created at.
-   * @type {Date}
-   * @readonly
-   */
-  get createdAt() {
-    return new Date(this.createdTimestamp);
   }
 
   /**
