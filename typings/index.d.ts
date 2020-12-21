@@ -9,6 +9,10 @@ declare enum ChannelType {
   unknown = 7,
 }
 
+declare enum InteractionType {
+  application_command = 1,
+}
+
 declare module 'discord.js' {
   import BaseCollection from '@discordjs/collection';
   import { ChildProcess } from 'child_process';
@@ -51,25 +55,28 @@ declare module 'discord.js' {
   }
 
   export class APIMessage {
-    constructor(target: MessageTarget, options: MessageOptions | WebhookMessageOptions);
+    constructor(target: MessageTarget, options: InteractionMessageOptions | MessageOptions | WebhookMessageOptions);
     public data: object | null;
+    public readonly isInteraction: boolean;
+    public readonly isMessage: boolean;
     public readonly isUser: boolean;
     public readonly isWebhook: boolean;
     public files: object[] | null;
-    public options: MessageOptions | WebhookMessageOptions;
+    public hideSource: boolean;
+    public options: InteractionMessageOptions | MessageOptions | WebhookMessageOptions;
     public target: MessageTarget;
 
     public static create(
       target: MessageTarget,
       content: APIMessageContentResolvable,
       options?: undefined,
-      extra?: MessageOptions | WebhookMessageOptions,
+      extra?: InteractionMessageOptions | MessageOptions | WebhookMessageOptions,
     ): APIMessage;
     public static create(
       target: MessageTarget,
       content: StringResolvable,
-      options: MessageOptions | WebhookMessageOptions | MessageAdditions,
-      extra?: MessageOptions | WebhookMessageOptions,
+      options: InteractionMessageOptions | MessageOptions | WebhookMessageOptions | MessageAdditions,
+      extra?: InteractionMessageOptions | MessageOptions | WebhookMessageOptions,
     ): APIMessage;
     public static partitionMessageAdditions(
       items: readonly (MessageEmbed | MessageAttachment)[],
@@ -78,21 +85,35 @@ declare module 'discord.js' {
     public static transformOptions(
       content: APIMessageContentResolvable,
       options?: undefined,
-      extra?: MessageOptions | WebhookMessageOptions,
+      extra?: InteractionMessageOptions | MessageOptions | WebhookMessageOptions,
       isWebhook?: boolean,
-    ): MessageOptions | WebhookMessageOptions;
+    ): InteractionMessageOptions | MessageOptions | WebhookMessageOptions;
     public static transformOptions(
       content: StringResolvable,
-      options: MessageOptions | WebhookMessageOptions | MessageAdditions,
-      extra?: MessageOptions | WebhookMessageOptions,
+      options: InteractionMessageOptions | MessageOptions | WebhookMessageOptions | MessageAdditions,
+      extra?: InteractionMessageOptions | MessageOptions | WebhookMessageOptions,
       isWebhook?: boolean,
-    ): MessageOptions | WebhookMessageOptions;
+    ): InteractionMessageOptions | MessageOptions | WebhookMessageOptions;
 
     public makeContent(): string | string[] | undefined;
     public resolve(): Promise<this>;
     public resolveData(): this;
     public resolveFiles(): Promise<this>;
     public split(): APIMessage[];
+  }
+
+  export class ApplicationCommand extends Base {
+    constructor(client: Client, data?: object, guildID?: Snowflake);
+    public applicationID: Snowflake;
+    public readonly createdAt: Date;
+    public readonly createdTimestamp: number;
+    public description: string;
+    public guildID: Snowflake | null;
+    public id: Snowflake;
+    public name: string;
+    public options: object[];
+
+    public delete(): void;
   }
 
   export abstract class Application {
@@ -201,6 +222,7 @@ declare module 'discord.js' {
     public channels: ChannelManager;
     public readonly emojis: BaseGuildEmojiManager;
     public guilds: GuildManager;
+    public interactionClient: InteractionClient;
     public readyAt: Date | null;
     public readonly readyTimestamp: number | null;
     public shard: ShardClientUtil | null;
@@ -311,6 +333,17 @@ declare module 'discord.js' {
 
   type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg' | 'gif';
 
+  export class CommandInteraction extends Interaction {
+    constructor(client: Client | InteractionClient, data: object, syncHandle: object);
+
+    public commandID: Snowflake;
+    public commandName: string;
+    public options?: object;
+
+    public acknowledge(options?: InteractionMessageOptions): void;
+    public reply(content?: StringResolvable | APIMessage, options?: InteractionMessageOptions | MessageAdditions): void;
+  }
+
   export const Constants: {
     Package: {
       name: string;
@@ -388,6 +421,7 @@ declare module 'discord.js' {
       CHANNEL_DELETE: 'channelDelete';
       CHANNEL_UPDATE: 'channelUpdate';
       CHANNEL_PINS_UPDATE: 'channelPinsUpdate';
+      INTERACTION_CREATE: 'interactionCreate';
       MESSAGE_CREATE: 'message';
       MESSAGE_DELETE: 'messageDelete';
       MESSAGE_UPDATE: 'messageUpdate';
@@ -513,6 +547,18 @@ declare module 'discord.js' {
       SMALL: 1;
       BIG: 2;
     };
+    InteractionType: {
+      PING: 1,
+      APPLICATION_COMMAND: 2,
+    };
+    InteractionResponseType: {
+      PONG: 1,
+      ACKNOWLEDGE: 2,
+      CHANNEL_MESSAGE: 3,
+      CHANNEL_MESSAGE_WITH_SOURCE: 4,
+      ACKNOWLEDGE_WITH_SOURCE: 5,
+    };
+    ApplicationCommandOptionType: ApplicationCommandOptionType[];
     MessageTypes: MessageType[];
     SystemMessageTypes: SystemMessageType[];
     ActivityTypes: ActivityType[];
@@ -634,6 +680,7 @@ declare module 'discord.js' {
     public widgetEnabled: boolean | null;
     public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
     public bannerURL(options?: ImageURLOptions): string | null;
+    public createCommand(command: object): ApplicationCommand;
     public createIntegration(data: IntegrationData, reason?: string): Promise<Guild>;
     public createTemplate(name: string, description?: string): Promise<GuildTemplate>;
     public delete(): Promise<Guild>;
@@ -644,6 +691,7 @@ declare module 'discord.js' {
     public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
     public fetchBan(user: UserResolvable): Promise<{ user: User; reason: string }>;
     public fetchBans(): Promise<Collection<Snowflake, { user: User; reason: string }>>;
+    public fetchCommands(): ApplicationCommand[];
     public fetchEmbed(): Promise<GuildWidget>;
     public fetchIntegrations(options?: FetchIntegrationsOptions): Promise<Collection<string, Integration>>;
     public fetchInvites(): Promise<Collection<string, Invite>>;
@@ -914,6 +962,58 @@ declare module 'discord.js' {
 
   export class IntegrationApplication extends Application {
     public bot: User | null;
+  }
+
+  export class Interaction extends Base {
+    constructor(client: Client | InteractionClient, data: object, syncHandle: object);
+    public channel?: Channel;
+    public readonly createdAt: Date;
+    public readonly createdTimestamp: number;
+    public readonly expired: boolean;
+    public guild?: Guild;
+    public id: Snowflake;
+    public member?: GuildMember;
+    public syncHandle: object;
+    public type: keyof typeof InteractionType;
+  }
+
+  export class InteractionClient extends BaseClient {
+    constructor(options?: object);
+    private handle(data: object): Promise<object>;
+    private handleFromGateway(data: object);
+
+    public client: Client | InteractionClient;
+    public clientID: Snowflake;
+    public interactionClient: InteractionClient;
+    public publicKey?: Buffer;
+    public token: string;
+    public createCommand(command: object, guildID?: Snowflake): ApplicationCommand;
+    public fetchCommands(guildID?: Snowflake): ApplicationCommand[];
+    public middleware(): (req: object, res: object) => void;
+
+    public on<K extends keyof InteractionClientEvents>(event: K, listener: (...args: InteractionClientEvents[K]) => void): this;
+    public on<S extends string | symbol>(
+      event: Exclude<S, keyof InteractionClientEvents>,
+      listener: (...args: any[]) => void,
+    ): this;
+
+    public once<K extends keyof InteractionClientEvents>(event: K, listener: (...args: InteractionClientEvents[K]) => void): this;
+    public once<S extends string | symbol>(
+      event: Exclude<S, keyof InteractionClientEvents>,
+      listener: (...args: any[]) => void,
+    ): this;
+
+    public emit<K extends keyof InteractionClientEvents>(event: K, ...args: InteractionClientEvents[K]): boolean;
+    public emit<S extends string | symbol>(event: Exclude<S, keyof ClientEvents>, ...args: any[]): boolean;
+
+    public off<K extends keyof InteractionClientEvents>(event: K, listener: (...args: InteractionClientEvents[K]) => void): this;
+    public off<S extends string | symbol>(
+      event: Exclude<S, keyof InteractionClientEvents>,
+      listener: (...args: any[]) => void,
+    ): this;
+
+    public removeAllListeners<K extends keyof InteractionClientEvents>(event?: K): this;
+    public removeAllListeners<S extends string | symbol>(event?: Exclude<S, keyof InteractionClientEvents>): this;
   }
 
   export class Intents extends BitField<IntentsString> {
@@ -2205,6 +2305,16 @@ declare module 'discord.js' {
     type: 'BIG' | 'SMALL';
   }
 
+  type ApplicationCommandOptionType =
+    | 'SUB_COMMAND'
+    | 'SUB_COMMAND_GROUP'
+    | 'STRING'
+    | 'INTEGER'
+    | 'BOOLEAN'
+    | 'CHANNEL'
+    | 'USER'
+    | 'ROLE';
+
   interface AuditLogChange {
     key: string;
     old?: any;
@@ -2298,6 +2408,7 @@ declare module 'discord.js' {
     guildMemberSpeaking: [GuildMember | PartialGuildMember, Readonly<Speaking>];
     guildMemberUpdate: [GuildMember | PartialGuildMember, GuildMember];
     guildUpdate: [Guild, Guild];
+    interactionCreate: [Interaction];
     inviteCreate: [Invite];
     inviteDelete: [Invite];
     message: [Message];
@@ -2335,6 +2446,7 @@ declare module 'discord.js' {
     messageEditHistoryMaxSize?: number;
     fetchAllMembers?: boolean;
     allowedMentions?: MessageMentionOptions;
+    hideSource?: boolean;
     partials?: PartialTypes[];
     restWsBridgeTimeout?: number;
     restTimeOffset?: number;
@@ -2710,6 +2822,22 @@ declare module 'discord.js' {
     name: string;
   }
 
+  interface InteractionClientEvents {
+    interactionCreate: [Interaction];
+  }
+
+  interface InteractionMessageOptions {
+    tts?: boolean;
+    nonce?: string | number;
+    content?: StringResolvable;
+    embeds?: (MessageEmbed | MessageEmbedOptions)[];
+    allowedMentions?: MessageMentionOptions;
+    code?: string | boolean;
+    split?: boolean | SplitOptions;
+    hideSource?: boolean;
+    ephemeral?: boolean;
+  }
+
   type IntentsString =
     | 'GUILDS'
     | 'GUILD_MEMBERS'
@@ -2827,7 +2955,7 @@ declare module 'discord.js' {
     target: WebSocket;
   }
 
-  type MessageFlagsString = 'CROSSPOSTED' | 'IS_CROSSPOST' | 'SUPPRESS_EMBEDS' | 'SOURCE_MESSAGE_DELETED' | 'URGENT';
+  type MessageFlagsString = 'CROSSPOSTED' | 'IS_CROSSPOST' | 'SUPPRESS_EMBEDS' | 'SOURCE_MESSAGE_DELETED' | 'URGENT' | 'EPHEMERAL';
 
   interface MessageMentionOptions {
     parse?: MessageMentionTypes[];
@@ -3249,6 +3377,7 @@ declare module 'discord.js' {
     | 'CHANNEL_DELETE'
     | 'CHANNEL_UPDATE'
     | 'CHANNEL_PINS_UPDATE'
+    | 'INTERACTION_CREATE'
     | 'MESSAGE_CREATE'
     | 'MESSAGE_DELETE'
     | 'MESSAGE_UPDATE'
