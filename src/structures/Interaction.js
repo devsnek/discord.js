@@ -85,6 +85,22 @@ class Interaction extends Base {
   get expired() {
     return Date.now() >= this.createdTimestamp + 900000;
   }
+
+  /**
+   * Options provided when sending or editing a message.
+   * @typedef {Object} InteractionMessageOptions
+   * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
+   * @property {string} [nonce=''] The nonce for the message
+   * @property {string} [content=''] The content for the message
+   * @property {MessageEmbed[]|Object[]} [embeds] The embeds for the message
+   * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
+   * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
+   * @property {string|boolean} [code] Language for optional codeblock formatting to apply
+   * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
+   * it exceeds the character limit. If an object is provided, these are the options for splitting the message
+   * @property {boolean} [hideSource] Whether or not to hide the source interaction
+   * @property {boolean} [ephemeral] Whether this message should be ephemeral
+   */
 }
 
 module.exports = Interaction;
