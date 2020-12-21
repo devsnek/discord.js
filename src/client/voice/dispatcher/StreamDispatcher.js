@@ -1,7 +1,7 @@
 'use strict';
 
 const { Writable } = require('stream');
-const secretbox = require('../util/Secretbox');
+const secretbox = require('../../../util/Sodium');
 const Silence = require('../util/Silence');
 const VolumeInterface = require('../util/VolumeInterface');
 
