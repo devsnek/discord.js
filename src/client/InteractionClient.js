@@ -61,7 +61,7 @@ class InteractionClient extends BaseClient {
   /**
    * Fetch registered slash commands.
    * @param {Snowflake} [guildID] Optional guild ID.
-   * @returns {Command[]}
+   * @returns {ApplicationCommand[]}
    */
   async fetchCommands(guildID) {
     let path = this.client.api.applications('@me');
@@ -89,7 +89,7 @@ class InteractionClient extends BaseClient {
         description: command.description,
         options: command.options?.map(function m(o) {
           return {
-            type: ApplicationCommandOptionType[o.type],
+            type: ApplicationCommandOptionType.indexOf[o.type],
             name: o.name,
             description: o.description,
             default: o.default,

@@ -35,7 +35,7 @@ class CommandInteraction extends Interaction {
 
   /**
    * Acknowledge this interaction without content.
-   * @param {Object} [options] Options
+   * @param {InteractionMessageOptions} [options] Options
    */
   async acknowledge(options = {}) {
     await this.syncHandle.acknowledge(options);
@@ -44,7 +44,7 @@ class CommandInteraction extends Interaction {
   /**
    * Reply to this interaction.
    * @param {(StringResolvable | APIMessage)?} content The content for the message.
-   * @param {(MessageOptions | MessageAdditions)?} options The options to provide.
+   * @param {(InteractionMessageOptions | MessageAdditions)?} options The options to provide.
    */
   async reply(content, options) {
     let apiMessage;
