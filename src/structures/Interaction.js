@@ -1,5 +1,6 @@
 'use strict';
 
+const APIMessage = require('./APIMessage');
 const Base = require('./Base');
 const { InteractionType } = require('../util/Constants');
 const Snowflake = require('../util/Snowflake');

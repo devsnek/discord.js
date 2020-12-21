@@ -1,6 +1,5 @@
 'use strict';
 
-const APIMessage = require('./APIMessage');
 const Interaction = require('./Interaction');
 
 /**
