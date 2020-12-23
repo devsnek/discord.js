@@ -13,8 +13,6 @@ class CommandInteraction extends Interaction {
     super(client, data);
 
     this.syncHandle = syncHandle;
-
-
     /**
      * The ID of the invoked command.
      * @type {Snowflake}
