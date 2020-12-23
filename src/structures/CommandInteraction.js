@@ -52,7 +52,6 @@ class CommandInteraction extends Interaction {
   get createdAt() {
     return new Date(this.createdTimestamp);
   }
-  
   /**
    * Whether the token has expired
    * @type {boolean}
