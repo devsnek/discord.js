@@ -76,7 +76,6 @@ class CommandInteraction extends Interaction {
    * @property {boolean} [hideSource] Whether or not to hide the source interaction
    * @property {boolean} [ephemeral] Whether this message should be ephemeral
    */
-  
   /**
    * Acknowledge this interaction without content.
    * @param {InteractionMessageOptions} [options] Options
