@@ -683,8 +683,6 @@ exports.WebhookTypes = [
   'Incoming',
   'Channel Follower',
 ];
-
-
 /**
  * The type of option for an application command:
  * * SUB_COMMAND
