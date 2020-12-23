@@ -89,7 +89,7 @@ class InteractionClient extends BaseClient {
         description: command.description,
         options: command.options?.map(function m(o) {
           return {
-            type: ApplicationCommandOptionType.indexOf[o.type],
+            type: ApplicationCommandOptionType[o.type],
             name: o.name,
             description: o.description,
             default: o.default,

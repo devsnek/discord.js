@@ -167,10 +167,7 @@ class APIMessage {
       flags = this.options.flags != null ? new MessageFlags(this.options.flags).bitfield : this.target.flags.bitfield;
     } else if (this.isInteraction) {
       flags = this.options.ephemeral ? MessageFlags.FLAGS.EPHEMERAL : undefined;
-      this.hideSource =
-        typeof this.options.hideSource === 'undefined'
-          ? this.target.client.options.hideSource
-          : this.options.hideSource;
+      this.hideSource = this.options.hideSource ?? this.target.client.options.hideSource;
     }
 
     let allowedMentions =
