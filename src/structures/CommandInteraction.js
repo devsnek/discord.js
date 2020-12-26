@@ -13,6 +13,7 @@ class CommandInteraction extends Interaction {
     super(client, data);
 
     this.syncHandle = syncHandle;
+
     /**
      * The ID of the invoked command.
      * @type {Snowflake}
@@ -52,6 +53,7 @@ class CommandInteraction extends Interaction {
   get createdAt() {
     return new Date(this.createdTimestamp);
   }
+
   /**
    * Whether the token has expired
    * @type {boolean}
@@ -76,6 +78,7 @@ class CommandInteraction extends Interaction {
    * @property {boolean} [hideSource] Whether or not to hide the source interaction
    * @property {boolean} [ephemeral] Whether this message should be ephemeral
    */
+
   /**
    * Acknowledge this interaction without content.
    * @param {InteractionMessageOptions} [options] Options

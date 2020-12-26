@@ -725,6 +725,36 @@ exports.InteractionResponseType = {
   ACKNOWLEDGE_WITH_SOURCE: 5,
 };
 
+exports.ApplicationCommandOptionType = {
+  SUB_COMMAND: 1,
+  SUB_COMMAND_GROUP: 2,
+  STRING: 3,
+  INTEGER: 4,
+  BOOLEAN: 5,
+  USER: 6,
+  CHANNEL: 7,
+  ROLE: 8,
+};
+Object.entries(exports.ApplicationCommandOptionType).forEach(([k, v]) => {
+  exports.ApplicationCommandOptionType[v] = k;
+});
+
+exports.InteractionType = {
+  PING: 1,
+  APPLICATION_COMMAND: 2,
+};
+Object.entries(exports.InteractionType).forEach(([k, v]) => {
+  exports.InteractionType[v] = k;
+});
+
+exports.InteractionResponseType = {
+  PONG: 1,
+  ACKNOWLEDGE: 2,
+  CHANNEL_MESSAGE: 3,
+  CHANNEL_MESSAGE_WITH_SOURCE: 4,
+  ACKNOWLEDGE_WITH_SOURCE: 5,
+};
+
 function keyMirror(arr) {
   let tmp = Object.create(null);
   for (const value of arr) tmp[value] = value;
