@@ -88,8 +88,27 @@ class InteractionClient extends BaseClient {
   }
 
   /**
+   * Options for a slash command.
+   * @typedef {Object} ApplicationCommandOptions
+   * @property {string} type The type of the slash command
+   * @property {string} name The name of the slash command
+   * @property {string} description The description of the slash command
+   * @property {boolean} [required=false] Whether or not the option is required ot optional
+   * @property {ApplicationCommandOptionChoice[]} [choices] The choices of the slash command for the user to pick from
+   * @property {ApplicationCommandOptions[]} [options] Additional options if the slash command is a subcommand or a
+   * subcommand group
+   */
+
+  /**
+   * Choices for a slash command option
+   * @typedef {Object} ApplicationCommandOptionChoice
+   * @property {string} name The name of the choice
+   * @property {string|number} value The value of the choice
+   */
+
+  /**
    * Set all the commands for the application or guild.
-   * @param {Object[]} commands The command descriptor.
+   * @param {ApplicationCommandOptions[]} commands The command descriptor.
    * @param {Snowflake} [guildID] Optional guild ID.
    * @returns {ApplicationCommand[]} The commands.
    */
@@ -106,7 +125,7 @@ class InteractionClient extends BaseClient {
 
   /**
    * Create a command.
-   * @param {Object} command The command descriptor.
+   * @param {ApplicationCommandOptions} command The command descriptor.
    * @param {Snowflake} [guildID] Optional guild ID.
    * @returns {ApplicationCommand} The created command.
    */

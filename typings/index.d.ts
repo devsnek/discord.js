@@ -58,6 +58,7 @@ declare module 'discord.js' {
   export class APIMessage {
     constructor(target: MessageTarget, options: MessageOptions | WebhookMessageOptions);
     public data: object | null;
+	public readonly isInteraction: boolean;
     public readonly isUser: boolean;
     public readonly isWebhook: boolean;
     public readonly isMessage: boolean;
@@ -113,6 +114,20 @@ declare module 'discord.js' {
     public iconURL(options?: ImageURLOptions): string;
     public toJSON(): object;
     public toString(): string;
+  }
+
+  export class ApplicationCommand extends Base {
+	constructor(client: Client, data: object, guildID: Snowflake);
+	public applicationID: Snowflake;
+	public readonly createdAt: Date;
+	public readonly createdTimestamp: number;
+	public description: string;
+	public readonly guildID: Snowflake | null;
+	public id: Snowflake;
+	public name: string;
+	public options: ApplicationCommandOptions[];
+	public delete(): Promise<void>;
+	public edit(data: ApplicationCommandOptions): Promise<this>;
   }
 
   export class Base {
@@ -203,9 +218,11 @@ declare module 'discord.js' {
     private _eval(script: string): any;
     private _validateOptions(options: ClientOptions): void;
 
+	public applicationID: Snowflake | null;
     public channels: ChannelManager;
     public readonly emojis: BaseGuildEmojiManager;
     public guilds: GuildManager;
+	public interactionClient: InteractionClient;
     public options: ClientOptions;
     public readyAt: Date | null;
     public readonly readyTimestamp: number | null;
@@ -259,6 +276,9 @@ declare module 'discord.js' {
     public cover: string | null;
     public owner: User | Team | null;
     public rpcOrigins: string[];
+	public createCommand(command: ApplicationCommandOptions): Promise<ApplicationCommand>;
+	public fetchCommands(): Promise<ApplicationCommand[]>;
+	public setCommands(commands: ApplicationCommandOptions[]): Promise<ApplicationCommand[]>;
   }
 
   export class ClientUser extends User {
@@ -314,6 +334,29 @@ declare module 'discord.js' {
 
     public once(event: 'collect' | 'dispose', listener: (...args: any[]) => void): this;
     public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => void): this;
+  }
+
+  export class CommandInteraction extends Interaction {
+	constructor(client: Client, data: object, syncHandle: any);
+	public readonly commandID: Snowflake;
+	public readonly commandName: string;
+	public readonly createdAt: Date;
+	public readonly createdTimestamp: number;
+	public readonly options: object;
+	public reply(
+	  content: APIMessageContentResolvable | (MessageOptions & { split?: false }) | MessageAdditions,
+	): Promise<void>;
+	public reply(options: MessageOptions & { split: true | SplitOptions }): Promise<void>;
+	public reply(options: MessageOptions | APIMessage): Promise<void>;
+	public reply(
+	  content: StringResolvable,
+	  options: (MessageOptions & { split?: false }) | MessageAdditions,
+	): Promise<void>;
+	public reply(
+	  content: StringResolvable,
+	  options: MessageOptions & { split: true | SplitOptions },
+	): Promise<void>;
+	public reply(content: StringResolvable, options: MessageOptions): Promise<void>;
   }
 
   type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg' | 'gif';
@@ -420,6 +463,7 @@ declare module 'discord.js' {
       SHARD_READY: 'shardReady';
       SHARD_RESUME: 'shardResume';
       INVALIDATED: 'invalidated';
+	  INTERACTION_CREATE: 'interactionCreate';
       RAW: 'raw';
     };
     ShardEvents: {
@@ -640,6 +684,7 @@ declare module 'discord.js' {
     public widgetEnabled: boolean | null;
     public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
     public bannerURL(options?: ImageURLOptions): string | null;
+	public createCommand(command: ApplicationCommandOptions): Promise<ApplicationCommand>;
     public createIntegration(data: IntegrationData, reason?: string): Promise<Guild>;
     public createTemplate(name: string, description?: string): Promise<GuildTemplate>;
     public delete(): Promise<Guild>;
@@ -650,6 +695,7 @@ declare module 'discord.js' {
     public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
     public fetchBan(user: UserResolvable): Promise<{ user: User; reason: string }>;
     public fetchBans(): Promise<Collection<Snowflake, { user: User; reason: string }>>;
+	public fetchCommands(): Promise<ApplicationCommand[]>;
     public fetchIntegrations(): Promise<Collection<string, Integration>>;
     public fetchInvites(): Promise<Collection<string, Invite>>;
     public fetchPreview(): Promise<GuildPreview>;
@@ -665,6 +711,7 @@ declare module 'discord.js' {
     public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
     public setBanner(banner: Base64Resolvable | null, reason?: string): Promise<Guild>;
     public setChannelPositions(channelPositions: readonly ChannelPosition[]): Promise<Guild>;
+	public setCommands(commands: ApplicationCommandOptions[]): Promise<ApplicationCommand[]>;
     public setDefaultMessageNotifications(
       defaultMessageNotifications: DefaultMessageNotifications | number,
       reason?: string,
@@ -924,6 +971,31 @@ declare module 'discord.js' {
     public static ALL: number;
     public static NON_PRIVILEGED: number;
     public static resolve(bit?: BitFieldResolvable<IntentsString, number>): number;
+  }
+
+  export class Interaction extends Base {
+	constructor(client: Client, data: object);
+	public readonly applicationID: Snowflake;
+	public readonly channel: TextChannel | NewsChannel | DMChannel | null;
+	public readonly channelID: Snowflake | null;
+	public readonly guild: Guild | null;
+	public readonly guildID: Snowflake | null;
+	public readonly id: Snowflake;
+	public readonly member: GuildMember | null;
+	public readonly token: string;
+	public readonly type: InteractionType;
+	public readonly user: User | null;
+  }
+
+  export class InteractionClient extends BaseClient {
+	constructor(options: object, client: Client);
+	public applicationID: Snowflake;
+	public publicKey: string | undefined;
+	public token: string;
+	public createCommand(command: ApplicationCommandOptions, guildID?: Snowflake): Promise<ApplicationCommand>;
+	public fetchCommands(guildID?: Snowflake): Promise<ApplicationCommand[]>;
+	public middleware(): (req: any, res: any) => Promise<void>;
+	public setCommands(commands: ApplicationCommandOptions[], guildID?: Snowflake): Promise<ApplicationCommand[]>
   }
 
   export class Invite extends Base {
@@ -2305,6 +2377,31 @@ declare module 'discord.js' {
     type: 'BIG' | 'SMALL';
   }
 
+  interface ApplicationCommandOptions {
+	type: ApplicationCommandOptionType;
+	name: string;
+	description: string;
+	default: boolean;
+	required: boolean;
+	choices: ApplicationCommandOptionChoice[];
+	options: ApplicationCommandOptions[];
+  }
+
+  interface ApplicationCommandOptionChoice {
+	name: string;
+	value: string | number;
+  }
+
+  type ApplicationCommandOptionType =
+  	| 'SUB_COMMAND'
+	| 'SUB_COMMAND_GROUP'
+	| 'STRING'
+	| 'INTEGER'
+	| 'BOOLEAN'
+	| 'USER'
+	| 'CHANNEL'
+	| 'ROLE';
+
   interface AuditLogChange {
     key: string;
     old?: any;
@@ -2828,6 +2925,10 @@ declare module 'discord.js' {
     | 'DIRECT_MESSAGE_REACTIONS'
     | 'DIRECT_MESSAGE_TYPING';
 
+  type InteractionResponseType = 'PONG' | 'CHANNEL_MESSAGE_WITH_SOURCE' | 'DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE';
+
+  type InteractionType = 'PING' | 'APPLICATION_COMMAND';
+
   interface InviteGenerationOptions {
     permissions?: PermissionResolvable;
     guild?: GuildResolvable;
@@ -2942,7 +3043,13 @@ declare module 'discord.js' {
     target: WebSocket;
   }
 
-  type MessageFlagsString = 'CROSSPOSTED' | 'IS_CROSSPOST' | 'SUPPRESS_EMBEDS' | 'SOURCE_MESSAGE_DELETED' | 'URGENT';
+  type MessageFlagsString = 
+  	| 'CROSSPOSTED' 
+	| 'IS_CROSSPOST'
+	| 'SUPPRESS_EMBEDS'
+	| 'SOURCE_MESSAGE_DELETED'
+	| 'URGENT'
+	| 'EPHEMERAL';
 
   interface MessageMentionOptions {
     parse?: MessageMentionTypes[];
@@ -3045,7 +3152,8 @@ declare module 'discord.js' {
     | 'MANAGE_NICKNAMES'
     | 'MANAGE_ROLES'
     | 'MANAGE_WEBHOOKS'
-    | 'MANAGE_EMOJIS';
+    | 'MANAGE_EMOJIS'
+	| 'USE_APPLICATION_COMMANDS';
 
   interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> {}
 

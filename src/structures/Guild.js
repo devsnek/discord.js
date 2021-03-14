@@ -1371,7 +1371,7 @@ class Guild extends Base {
 
   /**
    * Set the commands for this guild. See {@link InteractionClient}.
-   * @param {Object[]} commands The command description.
+   * @param {ApplicationCommandOptions[]} commands The command description.
    * @returns {ApplicationCommand[]} The created commands.
    */
   setCommands(commands) {
@@ -1380,7 +1380,7 @@ class Guild extends Base {
 
   /**
    * Create a command. See {@link InteractionClient}.
-   * @param {Object} command The command description.
+   * @param {ApplicationCommandOptions} command The command description.
    * @returns {ApplicationCommand} The created command.
    */
   createCommand(command) {
