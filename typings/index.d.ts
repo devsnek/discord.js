@@ -277,8 +277,8 @@ declare module 'discord.js' {
     public owner: User | Team | null;
     public rpcOrigins: string[];
     public createCommand(command: ApplicationCommandOptions): Promise<ApplicationCommand>;
-	  public fetchCommands(): Promise<ApplicationCommand[]>;
-	  public setCommands(commands: ApplicationCommandOptions[]): Promise<ApplicationCommand[]>;
+    public fetchCommands(): Promise<ApplicationCommand[]>;
+    public setCommands(commands: ApplicationCommandOptions[]): Promise<ApplicationCommand[]>;
   }
 
   export class ClientUser extends User {
@@ -344,19 +344,19 @@ declare module 'discord.js' {
     public readonly createdTimestamp: number;
     public readonly options: object;
     public reply(
-	  content: APIMessageContentResolvable | (MessageOptions & { split?: false }) | MessageAdditions,
-	): Promise<Message>;
-	public reply(options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-	public reply(options: MessageOptions | APIMessage): Promise<Message | Message[]>;
-	public reply(
-	  content: StringResolvable,
-	  options: (MessageOptions & { split?: false }) | MessageAdditions,
-	): Promise<Message>;
-	public reply(
-	  content: StringResolvable,
-	  options: MessageOptions & { split: true | SplitOptions },
-	): Promise<Message[]>;
-	public reply(content: StringResolvable, options: MessageOptions): Promise<Message | Message[]>;
+      content: APIMessageContentResolvable | (MessageOptions & { split?: false }) | MessageAdditions,
+    ): Promise<Message>;
+    public reply(options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
+    public reply(options: MessageOptions | APIMessage): Promise<Message | Message[]>;
+    public reply(
+      content: StringResolvable,
+      options: (MessageOptions & { split?: false }) | MessageAdditions,
+    ): Promise<Message>;
+    public reply(
+      content: StringResolvable,
+      options: MessageOptions & { split: true | SplitOptions },
+    ): Promise<Message[]>;
+    public reply(content: StringResolvable, options: MessageOptions): Promise<Message | Message[]>;
   }
 
   type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg' | 'gif';
@@ -2393,7 +2393,7 @@ declare module 'discord.js' {
   }
 
   type ApplicationCommandOptionType =
-  	| 'SUB_COMMAND'
+    | 'SUB_COMMAND'
     | 'SUB_COMMAND_GROUP'
     | 'STRING'
     | 'INTEGER'
@@ -2496,7 +2496,7 @@ declare module 'discord.js' {
     guildMemberSpeaking: [member: GuildMember | PartialGuildMember, speaking: Readonly<Speaking>];
     guildMemberUpdate: [oldMember: GuildMember | PartialGuildMember, newMember: GuildMember];
     guildUpdate: [oldGuild: Guild, newGuild: Guild];
-	interactionCreate: [interaction: Interaction];
+    interactionCreate: [interaction: Interaction];
     inviteCreate: [invite: Invite];
     inviteDelete: [invite: Invite];
     message: [message: Message];
@@ -3045,7 +3045,7 @@ declare module 'discord.js' {
   }
 
   type MessageFlagsString =
-  	| 'CROSSPOSTED'
+    | 'CROSSPOSTED'
     | 'IS_CROSSPOST'
     | 'SUPPRESS_EMBEDS'
     | 'SOURCE_MESSAGE_DELETED'
