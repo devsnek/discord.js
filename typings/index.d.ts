@@ -344,19 +344,9 @@ declare module 'discord.js' {
     public readonly createdTimestamp: number;
     public readonly options: object;
     public reply(
-      content: APIMessageContentResolvable | (MessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message>;
-    public reply(options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-    public reply(options: MessageOptions | APIMessage): Promise<Message | Message[]>;
-    public reply(
-      content: StringResolvable,
-      options: (MessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message>;
-    public reply(
-      content: StringResolvable,
-      options: MessageOptions & { split: true | SplitOptions },
-    ): Promise<Message[]>;
-    public reply(content: StringResolvable, options: MessageOptions): Promise<Message | Message[]>;
+      content: APIMessage | APIMessageContentResolvable | InteractionReplyOptions | MessageAdditions,
+    ): Promise<void>;
+    public reply(content: StringResolvable, options: InteractionReplyOptions | MessageAdditions): Promise<void>;
   }
 
   type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg' | 'gif';
@@ -2925,6 +2915,10 @@ declare module 'discord.js' {
     | 'DIRECT_MESSAGES'
     | 'DIRECT_MESSAGE_REACTIONS'
     | 'DIRECT_MESSAGE_TYPING';
+
+  interface InteractionReplyOptions extends MessageOptions {
+    ephemeral?: boolean;
+  }
 
   type InteractionResponseType = 'PONG' | 'CHANNEL_MESSAGE_WITH_SOURCE' | 'DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE';
 
