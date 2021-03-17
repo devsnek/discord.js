@@ -2378,7 +2378,6 @@ declare module 'discord.js' {
     type: ApplicationCommandOptionType;
     name: string;
     description: string;
-    default: boolean;
     required?: boolean;
     choices?: ApplicationCommandOptionChoice[];
     options?: ApplicationCommandOption[];
