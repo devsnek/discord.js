@@ -122,7 +122,7 @@ declare module 'discord.js' {
     public readonly createdAt: Date;
     public readonly createdTimestamp: number;
     public description: string;
-    public readonly guildID: Snowflake | null;
+    public guildID: Snowflake | null;
     public id: Snowflake;
     public name: string;
     public options: ApplicationCommandOption[];

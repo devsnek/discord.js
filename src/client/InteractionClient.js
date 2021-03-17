@@ -92,7 +92,7 @@ class InteractionClient extends BaseClient {
    * @typedef {Object} ApplicationCommandData
    * @property {string} name The name of the slash command
    * @property {string} description The description of the slash command
-   * @property {ApplicationCommandOption[]} [options] Additional options of the slash command
+   * @property {ApplicationCommandOption[]} [options] Options for the slash command
    */
 
   /**

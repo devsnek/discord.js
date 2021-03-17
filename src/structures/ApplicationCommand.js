@@ -48,7 +48,7 @@ class ApplicationCommand extends Base {
 
     /**
      * The options of this command.
-     * @type {Object[]}
+     * @type {ApplicationCommandOption[]}
      */
     this.options = data.options?.map(function m(o) {
       return {
