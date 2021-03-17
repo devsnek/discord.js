@@ -15,7 +15,6 @@ class ApplicationCommand extends Base {
     /**
      * The ID of the guild this command is part of, if any.
      * @type {?Snowflake}
-     * @readonly
      */
     this.guildID = guildID ?? null;
 
@@ -26,35 +25,30 @@ class ApplicationCommand extends Base {
     /**
      * The ID of this command.
      * @type {Snowflake}
-     * @readonly
      */
     this.id = data.id;
 
     /**
      * The ID of the application which owns this command.
      * @type {Snowflake}
-     * @readonly
      */
     this.applicationID = data.application_id;
 
     /**
      * The name of this command.
      * @type {string}
-     * @readonly
      */
     this.name = data.name;
 
     /**
      * The description of this command.
      * @type {string}
-     * @readonly
      */
     this.description = data.description;
 
     /**
      * The options of this command.
      * @type {Object[]}
-     * @readonly
      */
     this.options = data.options?.map(function m(o) {
       return {
@@ -89,7 +83,7 @@ class ApplicationCommand extends Base {
 
   /**
    * Edit this command.
-   * @param {ApplicationCommandOptions} data The data to update the command with
+   * @param {ApplicationCommandData} data The data to update the command with
    */
   async edit(data) {
     const raw = {};

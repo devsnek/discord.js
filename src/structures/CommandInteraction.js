@@ -21,14 +21,12 @@ class CommandInteraction extends Interaction {
     /**
      * The ID of the invoked command.
      * @type {Snowflake}
-     * @readonly
      */
     this.commandID = data.data.id;
 
     /**
      * The name of the invoked command.
      * @type {string}
-     * @readonly
      */
     this.commandName = data.data.name;
 
@@ -102,7 +100,6 @@ class CommandInteraction extends Interaction {
     /**
      * The options passed to the command.
      * @type {Object}
-     * @readonly
      */
     this.options = data.data.options.map(map);
   }

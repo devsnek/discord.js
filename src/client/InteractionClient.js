@@ -88,14 +88,22 @@ class InteractionClient extends BaseClient {
   }
 
   /**
-   * Options for a slash command.
-   * @typedef {Object} ApplicationCommandOptions
-   * @property {string} type The type of the slash command
+   * Data for creating or editing a slash command.
+   * @typedef {Object} ApplicationCommandData
    * @property {string} name The name of the slash command
    * @property {string} description The description of the slash command
-   * @property {boolean} [required=false] Whether or not the option is required ot optional
-   * @property {ApplicationCommandOptionChoice[]} [choices] The choices of the slash command for the user to pick from
-   * @property {ApplicationCommandOptions[]} [options] Additional options if the slash command is a subcommand or a
+   * @property {ApplicationCommandOption[]} [options] Additional options of the slash command
+   */
+
+  /**
+   * Option for a slash command.
+   * @typedef {Object} ApplicationCommandOption
+   * @property {string} type The type of the slash command option
+   * @property {string} name The name of the slash command option
+   * @property {string} description The description of the slash command option
+   * @property {boolean} [required] Whether or not the option is required
+   * @property {ApplicationCommandOptionChoice[]} [choices] The choices of the option for the user to pick from
+   * @property {ApplicationCommandOption[]} [options] Additional options if the option is a subcommand or a
    * subcommand group
    */
 
@@ -108,7 +116,7 @@ class InteractionClient extends BaseClient {
 
   /**
    * Set all the commands for the application or guild.
-   * @param {ApplicationCommandOptions[]} commands The command descriptor.
+   * @param {ApplicationCommandData[]} commands The command descriptor.
    * @param {Snowflake} [guildID] Optional guild ID.
    * @returns {ApplicationCommand[]} The commands.
    */
@@ -125,7 +133,7 @@ class InteractionClient extends BaseClient {
 
   /**
    * Create a command.
-   * @param {ApplicationCommandOptions} command The command descriptor.
+   * @param {ApplicationCommandData} command The command descriptor.
    * @param {Snowflake} [guildID] Optional guild ID.
    * @returns {ApplicationCommand} The created command.
    */

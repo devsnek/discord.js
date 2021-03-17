@@ -125,9 +125,9 @@ declare module 'discord.js' {
     public readonly guildID: Snowflake | null;
     public id: Snowflake;
     public name: string;
-    public options: ApplicationCommandOptions[];
+    public options: ApplicationCommandOption[];
     public delete(): Promise<void>;
-    public edit(data: ApplicationCommandOptions): Promise<this>;
+    public edit(data: ApplicationCommandData): Promise<this>;
   }
 
   export class Base {
@@ -276,9 +276,9 @@ declare module 'discord.js' {
     public cover: string | null;
     public owner: User | Team | null;
     public rpcOrigins: string[];
-    public createCommand(command: ApplicationCommandOptions): Promise<ApplicationCommand>;
+    public createCommand(command: ApplicationCommandData): Promise<ApplicationCommand>;
     public fetchCommands(): Promise<ApplicationCommand[]>;
-    public setCommands(commands: ApplicationCommandOptions[]): Promise<ApplicationCommand[]>;
+    public setCommands(commands: ApplicationCommandData[]): Promise<ApplicationCommand[]>;
   }
 
   export class ClientUser extends User {
@@ -338,11 +338,12 @@ declare module 'discord.js' {
 
   export class CommandInteraction extends Interaction {
     constructor(client: Client, data: object, syncHandle: any);
-    public readonly commandID: Snowflake;
-    public readonly commandName: string;
+    public commandID: Snowflake;
+    public commandName: string;
     public readonly createdAt: Date;
     public readonly createdTimestamp: number;
-    public readonly options: object;
+    public options: object;
+    public type: 'APPLICATION_COMMAND';
     public reply(
       content: APIMessage | APIMessageContentResolvable | InteractionReplyOptions | MessageAdditions,
     ): Promise<void>;
@@ -674,7 +675,7 @@ declare module 'discord.js' {
     public widgetEnabled: boolean | null;
     public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
     public bannerURL(options?: ImageURLOptions): string | null;
-    public createCommand(command: ApplicationCommandOptions): Promise<ApplicationCommand>;
+    public createCommand(command: ApplicationCommandData): Promise<ApplicationCommand>;
     public createIntegration(data: IntegrationData, reason?: string): Promise<Guild>;
     public createTemplate(name: string, description?: string): Promise<GuildTemplate>;
     public delete(): Promise<Guild>;
@@ -701,7 +702,7 @@ declare module 'discord.js' {
     public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
     public setBanner(banner: Base64Resolvable | null, reason?: string): Promise<Guild>;
     public setChannelPositions(channelPositions: readonly ChannelPosition[]): Promise<Guild>;
-    public setCommands(commands: ApplicationCommandOptions[]): Promise<ApplicationCommand[]>;
+    public setCommands(commands: ApplicationCommandData[]): Promise<ApplicationCommand[]>;
     public setDefaultMessageNotifications(
       defaultMessageNotifications: DefaultMessageNotifications | number,
       reason?: string,
@@ -965,16 +966,16 @@ declare module 'discord.js' {
 
   export class Interaction extends Base {
     constructor(client: Client, data: object);
-    public readonly applicationID: Snowflake;
-    public readonly channel: TextChannel | NewsChannel | DMChannel | null;
-    public readonly channelID: Snowflake | null;
-    public readonly guild: Guild | null;
-    public readonly guildID: Snowflake | null;
-    public readonly id: Snowflake;
-    public readonly member: GuildMember | null;
-    public readonly token: string;
-    public readonly type: InteractionType;
-    public readonly user: User | null;
+    public applicationID: Snowflake;
+    public channel: TextChannel | NewsChannel | DMChannel | null;
+    public channelID: Snowflake | null;
+    public guild: Guild | null;
+    public guildID: Snowflake | null;
+    public id: Snowflake;
+    public member: GuildMember | null;
+    public token: string;
+    public type: InteractionType;
+    public user: User | null;
   }
 
   export class InteractionClient extends BaseClient {
@@ -982,10 +983,10 @@ declare module 'discord.js' {
     public applicationID: Snowflake;
     public publicKey: string | undefined;
     public token: string;
-    public createCommand(command: ApplicationCommandOptions, guildID?: Snowflake): Promise<ApplicationCommand>;
+    public createCommand(command: ApplicationCommandData, guildID?: Snowflake): Promise<ApplicationCommand>;
     public fetchCommands(guildID?: Snowflake): Promise<ApplicationCommand[]>;
     public middleware(): (req: any, res: any) => Promise<void>;
-    public setCommands(commands: ApplicationCommandOptions[], guildID?: Snowflake): Promise<ApplicationCommand[]>;
+    public setCommands(commands: ApplicationCommandData[], guildID?: Snowflake): Promise<ApplicationCommand[]>;
   }
 
   export class Invite extends Base {
@@ -2367,14 +2368,20 @@ declare module 'discord.js' {
     type: 'BIG' | 'SMALL';
   }
 
-  interface ApplicationCommandOptions {
+  interface ApplicationCommandData {
+    name: string;
+    description: string;
+    options?: ApplicationCommandOption[];
+  }
+
+  interface ApplicationCommandOption {
     type: ApplicationCommandOptionType;
     name: string;
     description: string;
     default: boolean;
-    required: boolean;
-    choices: ApplicationCommandOptionChoice[];
-    options: ApplicationCommandOptions[];
+    required?: boolean;
+    choices?: ApplicationCommandOptionChoice[];
+    options?: ApplicationCommandOption[];
   }
 
   interface ApplicationCommandOptionChoice {

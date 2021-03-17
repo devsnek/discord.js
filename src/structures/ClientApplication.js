@@ -52,7 +52,7 @@ class ClientApplication extends Application {
 
   /**
    * Set the commands for this application. See {@link InteractionClient}.
-   * @param {ApplicationCommandOptions[]} commands The command description.
+   * @param {ApplicationCommandData[]} commands The command description.
    * @returns {ApplicationCommand[]} The created commands.
    */
   setCommands(commands) {
@@ -61,7 +61,7 @@ class ClientApplication extends Application {
 
   /**
    * Create a command. See {@link InteractionClient}.
-   * @param {ApplicationCommandOptions} command The command description.
+   * @param {ApplicationCommandData} command The command description.
    * @returns {ApplicationCommand} The created command.
    */
   createCommand(command) {
