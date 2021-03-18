@@ -82,6 +82,14 @@ class Interaction extends Base {
      */
     this.member = data.member ? this.guild?.members.add(data.member, false) : null;
   }
+
+  /**
+   * Indicates whether this interaction is a slash command.
+   * @returns {boolean}
+   */
+  isCommand() {
+    return this.type === 'APPLICATION_COMMAND';
+  }
 }
 
 module.exports = Interaction;

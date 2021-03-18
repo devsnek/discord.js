@@ -975,6 +975,7 @@ declare module 'discord.js' {
     public readonly token: string;
     public readonly type: InteractionType;
     public readonly user: User | null;
+    public isCommand(): this is CommandInteraction;
   }
 
   export class InteractionClient extends BaseClient {
